@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Graph author="nkorshun" created="Sun May 08 12:59:18 MSK 2016" guiVersion="4.1.3" id="1462733329241" licenseCode="CLP1DVIENN70261593EX" licenseType="Evaluation" modified="Sun May 08 22:22:52 MSK 2016" modifiedBy="nkorshun" name="some_more_preparations" revision="1.4" showComponentDetails="true">
+<Global>
+<Metadata id="Metadata2">
+<Record fieldDelimiter="|" name="recordName1" recordDelimiter="\r\n" type="delimited">
+<Field name="SECID" type="string"/>
+<Field name="Date" type="date"/>
+<Field name="Yield" type="number"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata0" previewAttachment="${DATAIN_DIR}/trades.csv" previewAttachmentCharset="ISO-8859-1">
+<Record fieldDelimiter="," label="trades.csv" name="trades_csv" previewAttachment="${DATAIN_DIR}/trades.csv" previewAttachmentCharset="ISO-8859-1" quoteChar="both" quotedStrings="false" recordDelimiter="\r\n" skipSourceRows="1" type="delimited">
+<Field label="SECID" name="SECID" type="string"/>
+<Field format="yyyy-MM-dd" label="Date" name="Date" type="date"/>
+<Field label="Open" name="Open" type="number"/>
+<Field label="High" name="High" type="number"/>
+<Field label="Low" name="Low" type="number"/>
+<Field label="Close" name="Close" type="number"/>
+<Field label="Volume" name="Volume" type="integer"/>
+<Field eofAsDelimiter="true" label="Adj Close" name="Adj_Close" type="number"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata1" previewAttachment="${DATATMP_DIR}/yields.csv" previewAttachmentCharset="ISO-8859-1">
+<Record fieldDelimiter=";" label="yields.csv" name="yields_csv" previewAttachment="${DATATMP_DIR}/yields.csv" previewAttachmentCharset="ISO-8859-1" quoteChar="both" quotedStrings="false" recordDelimiter="\r\n" skipSourceRows="0" type="delimited">
+<Field name="SECID" type="string"/>
+<Field eofAsDelimiter="true" name="yield" type="number"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata3" previewAttachment="${DATATMP_DIR}/yields.csv" previewAttachmentCharset="ISO-8859-1">
+<Record fieldDelimiter=";" label="yields.csv" name="yields_csv" previewAttachment="${DATATMP_DIR}/yields.csv" previewAttachmentCharset="ISO-8859-1" quoteChar="both" quotedStrings="false" recordDelimiter="\r\n" skipSourceRows="0" type="delimited">
+<Field name="Field1" type="string"/>
+<Field eofAsDelimiter="true" name="Field2" type="number"/>
+</Record>
+</Metadata>
+<GraphParameters>
+<GraphParameterFile fileURL="workspace.prm"/>
+</GraphParameters>
+<Dictionary/>
+</Global>
+<Phase number="0">
+<Node guiName="Combine" guiX="541" guiY="173" id="COMBINE" type="COMBINE">
+<attr name="transform"><![CDATA[//#CTL2
+
+// Transforms input record into output record.
+function integer transform() {
+	$out.0.SECID = $in.0.Field1;
+	$out.0.Yield = $in.0.Field2;
+	$out.0.Date = $in.1.Date;
+
+	return ALL;
+}
+
+// Called during component initialization.
+// function boolean init() {}
+
+// Called during each graph run before the transform is executed. May be used to allocate and initialize resources
+// required by the transform. All resources allocated within this method should be released
+// by the postExecute() method.
+// function void preExecute() {}
+
+// Called only if transform() throws an exception.
+// function integer transformOnError(string errorMessage, string stackTrace) {}
+
+// Called during each graph run after the entire transform was executed. Should be used to free any resources
+// allocated within the preExecute() method.
+// function void postExecute() {}
+
+// Called to return a user-defined error message when an error occurs.
+// function string getMessage() {}
+]]></attr>
+</Node>
+<Node guiName="FastSort" guiX="541" guiY="321" id="FAST_SORT" sortKey="SECID(a);Date(a)" type="FAST_SORT"/>
+<Node fileURL="${DATAIN_DIR}/trades.csv" guiName="UniversalDataReader" guiX="168" guiY="373" id="UNIVERSAL_DATA_READER" type="DATA_READER"/>
+<Node fileURL="${DATATMP_DIR}/yields.csv" guiName="UniversalDataReader" guiX="162" guiY="106" id="UNIVERSAL_DATA_READER1" type="DATA_READER"/>
+<Node fileURL="${DATATMP_DIR}/ready_for_correllation.csv" guiName="UniversalDataWriter" guiX="758" guiY="162" id="UNIVERSAL_DATA_WRITER" type="DATA_WRITER"/>
+<Edge fromNode="COMBINE:0" guiBendpoints="" guiRouter="Manhattan" id="Edge6" inPort="Port 0 (in)" metadata="Metadata2" outPort="Port 0 (out)" toNode="UNIVERSAL_DATA_WRITER:0"/>
+<Edge fromNode="FAST_SORT:0" guiBendpoints="" guiRouter="Manhattan" id="Edge5" inPort="Port 1 (in)" outPort="Port 0 (out)" persistedImplicitMetadata="Metadata0" toNode="COMBINE:1"/>
+<Edge fromNode="UNIVERSAL_DATA_READER:0" guiBendpoints="" guiRouter="Manhattan" id="Edge0" inPort="Port 0 (in)" metadata="Metadata0" outPort="Port 0 (output)" toNode="FAST_SORT:0"/>
+<Edge fromNode="UNIVERSAL_DATA_READER1:0" guiBendpoints="" guiRouter="Manhattan" id="Edge4" inPort="Port 0 (in)" metadata="Metadata3" outPort="Port 0 (output)" toNode="COMBINE:0"/>
+</Phase>
+</Graph>

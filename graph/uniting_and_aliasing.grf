@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Graph author="nkorshun" created="Sun May 08 12:59:18 MSK 2016" guiVersion="4.1.3" id="1462702278746" licenseCode="CLP1DVIENN70261593EX" licenseType="Evaluation" modified="Sun May 08 22:15:56 MSK 2016" modifiedBy="nkorshun" name="uniting_and_aliasing" revision="1.14" showComponentDetails="true">
+<Global>
+<Metadata id="Metadata0">
+<Record fieldDelimiter="|" name="recordName1" recordDelimiter="\r\n" type="delimited">
+<Field name="field1" type="string"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata3">
+<Record fieldDelimiter="|" name="recordName2" recordDelimiter="\r\n" type="delimited">
+<Field name="SECID" type="string"/>
+<Field name="Trade_days" type="integer"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata1" previewAttachment="${DATAIN_DIR}/trades.csv" previewAttachmentCharset="ISO-8859-1">
+<Record fieldDelimiter="," label="trades.csv" name="trades_csv" previewAttachment="${DATAIN_DIR}/trades.csv" previewAttachmentCharset="ISO-8859-1" quoteChar="both" quotedStrings="false" recordDelimiter="\r\n" skipSourceRows="1" type="delimited">
+<Field label="SECID" name="SECID" type="string"/>
+<Field format="yyyy-MM-dd" label="Date" name="Date" type="date"/>
+<Field label="Open" name="Open" type="number"/>
+<Field label="High" name="High" type="number"/>
+<Field label="Low" name="Low" type="number"/>
+<Field label="Close" name="Close" type="number"/>
+<Field label="Volume" name="Volume" type="integer"/>
+<Field eofAsDelimiter="true" label="Adj Close" name="Adj_Close" type="number"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata2" previewAttachment="${DATAIN_DIR}/trades.csv" previewAttachmentCharset="ISO-8859-1">
+<Record fieldDelimiter="," label="trades.csv" name="trades_csv" previewAttachment="${DATAIN_DIR}/trades.csv" previewAttachmentCharset="ISO-8859-1" quoteChar="both" quotedStrings="false" recordDelimiter="\r\n" skipSourceRows="1" type="delimited">
+<Field label="SECID" name="SECID" type="string"/>
+<Field format="yyyy-MM-dd" label="Date" name="Date" type="date"/>
+<Field label="Open" name="Open" type="number"/>
+<Field label="High" name="High" type="number"/>
+<Field label="Low" name="Low" type="number"/>
+<Field label="Close" name="Close" type="number"/>
+<Field label="Volume" name="Volume" type="integer"/>
+<Field eofAsDelimiter="true" label="Adj Close" name="Adj_Close" type="number"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata4" previewAttachment="${DATAIN_DIR}/trades.csv" previewAttachmentCharset="ISO-8859-1">
+<Record fieldDelimiter="," label="trades.csv" name="trades_csv" previewAttachment="${DATAIN_DIR}/trades.csv" previewAttachmentCharset="ISO-8859-1" quoteChar="both" quotedStrings="false" recordDelimiter="\r\n" skipSourceRows="1" type="delimited">
+<Field label="SECID" name="SECID" type="string"/>
+<Field format="yyyy-MM-dd" label="Date" name="Date" type="date"/>
+<Field label="Open" name="Open" type="number"/>
+<Field label="High" name="High" type="number"/>
+<Field label="Low" name="Low" type="number"/>
+<Field label="Close" name="Close" type="number"/>
+<Field label="Volume" name="Volume" type="integer"/>
+<Field eofAsDelimiter="true" label="Adj Close" name="Adj_Close" type="number"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata5">
+<Record fieldDelimiter="|" name="yields" recordDelimiter="\r\n" type="delimited">
+<Field name="field1" type="string"/>
+</Record>
+</Metadata>
+<GraphParameters>
+<GraphParameterFile fileURL="workspace.prm"/>
+</GraphParameters>
+<Dictionary/>
+</Global>
+<Phase number="0">
+<Node aggregateKey="SECID" guiName="Aggregate" guiX="469" guiY="68" id="AGGREGATE" mapping="$SECID:=$SECID;$Trade_days:=countnonnull($Date);" type="AGGREGATE"/>
+<Node genericTransformClass="MyCustomTransformer" guiName="CustomJavaTransformer" guiX="520" guiY="185" id="CUSTOM_JAVA_TRANSFORMER" type="GENERIC_TRANSFORMER"/>
+<Node guiName="FastSort" guiX="305" guiY="164" id="FAST_SORT" sortKey="SECID(a);Date(a)" type="FAST_SORT"/>
+<Node fileURL="${DATAIN_DIR}/trades.csv" guiName="UniversalDataReader" guiX="50" guiY="164" id="UNIVERSAL_DATA_READER" type="DATA_READER"/>
+<Node fileURL="${DATATMP_DIR}/SECID_DAYS.csv" guiName="UniversalDataWriter" guiX="704" guiY="26" id="UNIVERSAL_DATA_WRITER" outputFieldNames="true" type="DATA_WRITER"/>
+<Node fileURL="${DATATMP_DIR}/yields.csv" guiName="UniversalDataWriter" guiX="776" guiY="313" id="UNIVERSAL_DATA_WRITER1" outputFieldNames="false" type="DATA_WRITER"/>
+<Edge fromNode="AGGREGATE:0" guiBendpoints="" guiRouter="Manhattan" id="Edge8" inPort="Port 0 (in)" metadata="Metadata3" outPort="Port 0 (out)" toNode="UNIVERSAL_DATA_WRITER:0"/>
+<Edge fromNode="CUSTOM_JAVA_TRANSFORMER:0" guiBendpoints="" guiRouter="Manhattan" id="Edge16" inPort="Port 0 (in)" metadata="Metadata5" outPort="Port 0 (out)" toNode="UNIVERSAL_DATA_WRITER1:0"/>
+<Edge fromNode="FAST_SORT:0" guiBendpoints="" guiRouter="Manhattan" id="Edge6" inPort="Port 0 (in)" outPort="Port 0 (out)" persistedImplicitMetadata="Metadata2" toNode="AGGREGATE:0"/>
+<Edge fromNode="FAST_SORT:1" guiBendpoints="" guiRouter="Manhattan" id="Edge14" inPort="Port 0 (in)" outPort="Port 1 (out)" persistedImplicitMetadata="Metadata2" toNode="CUSTOM_JAVA_TRANSFORMER:0"/>
+<Edge fromNode="UNIVERSAL_DATA_READER:0" guiBendpoints="" guiRouter="Manhattan" id="Edge9" inPort="Port 0 (in)" metadata="Metadata2" outPort="Port 0 (output)" toNode="FAST_SORT:0"/>
+</Phase>
+</Graph>

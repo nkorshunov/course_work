@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Graph author="nkorshun" created="Sun May 08 12:59:18 MSK 2016" guiVersion="4.1.3" id="1462774847533" licenseCode="CLP1DVIENN70261593EX" licenseType="Evaluation" modified="Tue May 10 11:25:15 MSK 2016" modifiedBy="nkorshun" name="weithed_graph" revision="1.19" showComponentDetails="true">
+<Global>
+<Metadata id="Metadata0" previewAttachment="${DATATMP_DIR}/ready_for_correllation.csv" previewAttachmentCharset="ISO-8859-1">
+<Record fieldDelimiter="|" label="ready_for_correllation.csv" name="ready_for_correllation_csv" previewAttachment="${DATATMP_DIR}/ready_for_correllation.csv" previewAttachmentCharset="ISO-8859-1" quoteChar="both" quotedStrings="false" recordDelimiter="\r\n" skipSourceRows="0" type="delimited">
+<Field name="SECID" type="string"/>
+<Field format="yyyy-MM-dd" name="DATE" type="date"/>
+<Field eofAsDelimiter="true" name="YIELD" type="number"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata1">
+<Record fieldDelimiter="|" name="recordName1" recordDelimiter="\r\n" type="delimited">
+<Field name="SECID" type="string"/>
+<Field name="AVG_YIELD" type="number"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata3">
+<Record fieldDelimiter="|" name="temp" recordDelimiter="\r\n" type="delimited">
+<Field name="field1" type="string"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata2">
+<Record fieldDelimiter="|" name="trades_with_avg_yields" recordDelimiter="\r\n" type="delimited">
+<Field name="SECID" type="string"/>
+<Field name="DATE" type="date"/>
+<Field name="YIELD" type="number"/>
+<Field name="AVG_YIELD" type="number"/>
+</Record>
+</Metadata>
+<GraphParameters>
+<GraphParameterFile fileURL="workspace.prm"/>
+</GraphParameters>
+<Dictionary/>
+</Global>
+<Phase number="0">
+<Node aggregateKey="SECID" guiName="Aggregate" guiX="386" guiY="90" id="AGGREGATE" mapping="$SECID:=$SECID;$AVG_YIELD:=avg($YIELD);" type="AGGREGATE"/>
+<Node genericTransformClass="toCorrelationMatrix" guiName="CustomJavaTransformer" guiX="444" guiY="311" id="CUSTOM_JAVA_TRANSFORMER" type="GENERIC_TRANSFORMER"/>
+<Node guiName="Reformat" guiX="241" guiY="311" id="REFORMAT" type="REFORMAT">
+<attr name="transform"><![CDATA[//#CTL2
+
+// Transforms input record into output record.
+function integer transform() {
+	$out.0.SECID = $in.0.SECID;
+	$out.0.DATE = $in.0.DATE;
+	$out.0.YIELD = $in.0.YIELD;
+	$out.1.SECID = $in.0.SECID;
+	$out.1.DATE = $in.0.DATE;
+	$out.1.YIELD = $in.0.YIELD;
+
+	return ALL;
+}
+
+// Called during component initialization.
+// function boolean init() {}
+
+// Called during each graph run before the transform is executed. May be used to allocate and initialize resources
+// required by the transform. All resources allocated within this method should be released
+// by the postExecute() method.
+// function void preExecute() {}
+
+// Called only if transform() throws an exception.
+// function integer transformOnError(string errorMessage, string stackTrace) {}
+
+// Called during each graph run after the entire transform was executed. Should be used to free any resources
+// allocated within the preExecute() method.
+// function void postExecute() {}
+
+// Called to return a user-defined error message when an error occurs.
+// function string getMessage() {}
+]]></attr>
+</Node>
+<Node fileURL="${DATATMP_DIR}/ready_for_correllation.csv" guiName="UniversalDataReader" guiX="31" guiY="90" id="UNIVERSAL_DATA_READER" type="DATA_READER"/>
+<Node fileURL="${DATAOUT_DIR}/avg_yields_check.csv" guiName="UniversalDataWriter" guiX="647" guiY="28" id="UNIVERSAL_DATA_WRITER" type="DATA_WRITER"/>
+<Node fileURL="${DATAOUT_DIR}/cor_matrix1.csv" guiName="UniversalDataWriter" guiX="714" guiY="221" id="UNIVERSAL_DATA_WRITER1" type="DATA_WRITER"/>
+<Edge fromNode="AGGREGATE:0" guiBendpoints="" guiRouter="Manhattan" id="Edge1" inPort="Port 0 (in)" metadata="Metadata1" outPort="Port 0 (out)" toNode="UNIVERSAL_DATA_WRITER:0"/>
+<Edge fromNode="AGGREGATE:1" guiBendpoints="" guiRouter="Manhattan" id="Edge28" inPort="Port 1 (in)" metadata="Metadata1" outPort="Port 1 (out)" toNode="CUSTOM_JAVA_TRANSFORMER:1"/>
+<Edge fromNode="CUSTOM_JAVA_TRANSFORMER:0" guiBendpoints="" guiRouter="Manhattan" id="Edge29" inPort="Port 0 (in)" metadata="Metadata3" outPort="Port 0 (out)" toNode="UNIVERSAL_DATA_WRITER1:0"/>
+<Edge fromNode="REFORMAT:0" guiBendpoints="" guiRouter="Manhattan" id="Edge9" inPort="Port 0 (in)" outPort="Port 0 (out)" persistedImplicitMetadata="Metadata0" toNode="AGGREGATE:0"/>
+<Edge fromNode="REFORMAT:1" guiBendpoints="" guiRouter="Manhattan" id="Edge27" inPort="Port 0 (in)" outPort="Port 1 (out)" persistedImplicitMetadata="Metadata0" toNode="CUSTOM_JAVA_TRANSFORMER:0"/>
+<Edge fromNode="UNIVERSAL_DATA_READER:0" guiBendpoints="" guiRouter="Manhattan" id="Edge0" inPort="Port 0 (in)" metadata="Metadata0" outPort="Port 0 (output)" toNode="REFORMAT:0"/>
+</Phase>
+</Graph>
