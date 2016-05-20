@@ -54,45 +54,56 @@ public class toWeightedGraph extends AbstractGenericTransform {
 		
 		String RESULT_DIR="C:\\_course_work\\course_work\\toGraphs\\";
 		
-		ArrayList<Double> limits=new ArrayList<Double>();
+		ArrayList<Float> limits=new ArrayList<Float>();
 		
 		//filling the list of limits in my way
-		double limit=-0.5;
-		while (limit<1){
+		Float limit=(float) -0.5;
+		/*while (limit<1){
 			limits.add(limit);
-			limit+=0.15;
-		}
+			limit=limit +0.15F;
+		}*/
 		
-		
+		limits.add(0.6F);
+		limits.add(0.65F);
+		limits.add(0.7F);
+		limits.add(0.75F);
+		limits.add(0.8F);
+		limits.add(0.85F);
+		limits.add(0.9F);
 		
 		DataRecord inRecord=inRecords[0];
 	
-		DataField[] fields=inRecord.getFields();
+		String[] fields;
 		
 		
 		
 		
 		
 		
-		int n=inRecord.getNumFields()-1;
+		//int n=inRecord.getNumFields()-1;
+		int n=138;
 		
 		String[] secids=new String[n];
 		String title="SECID";
-		double[][] cor_matrix=new double[n][n];
+		Float[][] cor_matrix=new Float[n][n];
 		
 		int j=0;
+		
 		while ((inRecord = readRecordFromPort(0)) != null){
-			fields=inRecord.getFields();
-			secids[j]=fields[0].getValue().toString();
-			title+=";"+fields[0].getValue().toString();
-			System.out.println(inRecord.toString());
-			for (int i=0; i<n; i++){
-				if (fields[i+1].getValue()!=null)
-					cor_matrix[j][i]=Double.parseDouble(fields[i+1].getValue().toString());
+			//System.out.println(inRecord.toString());
+			fields=inRecord.getField(0).getValue().toString().split(";");
+			secids[j]=fields[0];
+			title+=";"+fields[0];
+			//System.out.println(inRecord.toString());
+			for (int i=0; i<n-1; i++){
+				if (fields[i+1]!=null)
+					
+					cor_matrix[j][i]=Float.parseFloat(fields[i+1]);
+				System.out.println(i+1);
 			}
 			j++;
 		}
-		System.out.println("READ FINISHED");
+		System.out.println("READ FINISHED  "+j);
 		
 		PrintWriter pw2=new PrintWriter(RESULT_DIR+"dict.csv");
 		for (int h=0; h<secids.length; h++){
@@ -102,7 +113,7 @@ public class toWeightedGraph extends AbstractGenericTransform {
 		
 		DataRecord outRecord=outRecords[0];
 		
-		for (double lim:limits){
+		for (Float lim:limits){
 			File f=new File(RESULT_DIR+lim+"_graph.graph");
 			f.createNewFile();
 			PrintWriter pw=new PrintWriter(f);
@@ -110,7 +121,7 @@ public class toWeightedGraph extends AbstractGenericTransform {
 			ArrayList<String> edges=new ArrayList<String>();
 			outRecord.getField(0).setValue(title);
 			writeRecordToPort(0, outRecord);
-			for (int i=0; i<n-1;i++){
+			for (int i=0; i<n;i++){
 				String s=secids[i];
 				//if (fields[i].getValue()!=null)
 					//s=fields[i].getValue().toString();
@@ -128,7 +139,7 @@ public class toWeightedGraph extends AbstractGenericTransform {
 			outRecord.getField(0).setValue("LIMIT "+lim+" ENDS");
 			writeRecordToPort(0, outRecord);	
 			
-			pw.println("p edge "+(n-1)+" "+edges.size());
+			pw.println("p edge "+(n)+" "+edges.size());
 			for (String s:edges){
 				pw.println(s);
 			}

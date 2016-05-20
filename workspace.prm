@@ -42,4 +42,19 @@
 <GraphParameter name="TRANS_DIR" value="${PROJECT}/trans">
 <attr name="description"><![CDATA[Default folder for java and CTL transformations]]></attr>
 </GraphParameter>
+<GraphParameter name="CURRENT_PERIOD_START" public="true" required="true" value="2009-01-01 00:00:00">
+<SingleType format="yyyy-MM-dd HH:mm:ss" name="datetime"/>
+</GraphParameter>
+<GraphParameter name="CURRENT_PERIOD_END" public="true" required="true" value="2009-12-31 00:00:00"/>
+<GraphParameter name="FILE_OUT_NAME" public="true">
+<attr name="dynamicValue"><![CDATA[//#CTL2
+
+function string getValue() {
+	return ${CURRENT_PERIOD_START}+"-"+${CURRENT_PERIOD_END};
+}
+]]></attr>
+</GraphParameter>
+<GraphParameter name="LIMIT_OF_TRADE_DAYS" public="true" required="true" value="120">
+<SingleType name="int"/>
+</GraphParameter>
 </GraphParameters>

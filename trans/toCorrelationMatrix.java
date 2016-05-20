@@ -94,7 +94,7 @@ public class toCorrelationMatrix extends AbstractGenericTransform {
 					//System.out.println(cor_matrix[j][k]);
 				}
 				else
-					cor_matrix[j][k]=-2;
+					cor_matrix[j][k]=-1;
 			}
 		}
 		
@@ -103,7 +103,7 @@ public class toCorrelationMatrix extends AbstractGenericTransform {
 		for (int j=0; j<list.size(); j++){
 			s+=list.get(j).SECID+";";
 		}
-		outRecord.getField(0).setValue(s);
+		outRecord.getField(0).setValue(s.substring(0, s.length()-1));
 		writeRecordToPort(0, outRecord);
 		
 		
@@ -112,7 +112,7 @@ public class toCorrelationMatrix extends AbstractGenericTransform {
 			for (int k=0; k<list.size(); k++){
 				s+=cor_matrix[j][k]+";";
 			}
-			outRecord.getField(0).setValue(s);
+			outRecord.getField(0).setValue(s.substring(0, s.length()-2));
 			writeRecordToPort(0, outRecord);
 		}
 		outRecord.getField(0).setValue("Done");

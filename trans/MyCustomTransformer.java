@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 import org.apache.log4j.Level;
 import org.jetel.component.AbstractGenericTransform;
 import org.jetel.data.DataRecord;
@@ -16,13 +18,13 @@ public class MyCustomTransformer extends AbstractGenericTransform {
 	@Override
 	public void execute() {
 		/** This code is an example. Replace it with your custom code. */
-
-		/** This is how you can read component properties. */
-		//String customValue = getProperties().getStringProperty("myCustomPropertyName");
-
-		/** You can log messages. */
-		//getLogger().log(Level.DEBUG, "Custom property resolved to: " + customValue);
-
+		DataRecord in= inRecords[1];
+		ArrayList<String> allowed_trades=new ArrayList<String>();
+		while ((in = readRecordFromPort(1)) != null) {
+			allowed_trades.add(in.getField(0).getValue().toString());
+		
+		}
+		
 		/** Record prepared for reading from input port 0 */
 		DataRecord inRecord = inRecords[0];
 
@@ -35,7 +37,7 @@ public class MyCustomTransformer extends AbstractGenericTransform {
 		boolean flag=true;
 		String curString=null;
 		int i=0;
-		
+		String date=null;
 		while ((inRecord = readRecordFromPort(0)) != null) {
 			
 			// Get value from input record
@@ -49,12 +51,12 @@ public class MyCustomTransformer extends AbstractGenericTransform {
 			System.out.println(prev_share);;
 			String prev_price=inRecord.getField("Close").getValue().toString();
 			String price =new String(prev_price);
-			
-			
+			date=inRecord.getField(1).getValue().toString();
+			if (allowed_trades.contains(SECID) ){
 			while (curString.equals(SECID) && (inRecord!=null)){
 				
 				Share temp=new Share(SECID,  (Double.parseDouble(price)-Double.parseDouble(prev_price))/Double.parseDouble(prev_price));
-				outRecord.getField(0).setValue(temp.toString());
+				outRecord.getField(0).setValue(temp.toString()+";"+date);
 				
 				
 				writeRecordToPort(0, outRecord);
@@ -62,14 +64,18 @@ public class MyCustomTransformer extends AbstractGenericTransform {
 				
 				
 					SECID=  inRecord.getField(0).getValue().toString();
-					price=  inRecord.getField("Close").getValue().toString();}
+					price=  inRecord.getField("Close").getValue().toString();
+					date=inRecord.getField(1).getValue().toString();}
 				
 			}
 			
 			flag=false;
 			curString=SECID;
-			outRecord.getField(0).setValue(new Share(SECID,  (Double.parseDouble(price)-Double.parseDouble(prev_price))/Double.parseDouble(prev_price)).toString());
-			writeRecordToPort(0, outRecord);
+			
+			outRecord.getField(0).setValue(new Share(SECID,  (Double.parseDouble(price)-Double.parseDouble(prev_price))/Double.parseDouble(prev_price)).toString()+";"+date);
+			if (allowed_trades.contains(SECID) )
+				writeRecordToPort(0, outRecord);
+			}
 			
 			// Save value multiplied by 2 to output record
 			
