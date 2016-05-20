@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Graph author="nkorshun" created="Wed May 18 22:12:22 MSK 2016" guiVersion="4.1.3" id="1463601859001" licenseCode="CLP1DVIENN70261593EX" licenseType="Evaluation" modified="Wed May 18 23:09:16 MSK 2016" modifiedBy="nkorshun" name="new-graph" revision="1.4" showComponentDetails="true">
+<Global>
+<Metadata id="Metadata0" previewAttachment="${PROJECT}/source_files/filtered_period.csv" previewAttachmentCharset="ISO-8859-1">
+<Record fieldDelimiter=";" label="filtered_period.csv" name="filtered_period_csv" previewAttachment="${PROJECT}/source_files/filtered_period.csv" previewAttachmentCharset="ISO-8859-1" quoteChar="both" quotedStrings="false" recordDelimiter="\r\n" skipSourceRows="1" type="delimited">
+<Field name="SECID" type="string"/>
+<Field format="yyyy-MM-dd" name="Date" type="date"/>
+<Field name="Open" scale="2" type="decimal"/>
+<Field name="High" scale="2" type="decimal"/>
+<Field name="Low" scale="2" type="decimal"/>
+<Field name="Close" scale="2" type="decimal"/>
+<Field name="Volume" type="long"/>
+<Field eofAsDelimiter="true" name="Adj_Close" type="string"/>
+</Record>
+</Metadata>
+<GraphParameters>
+<GraphParameterFile fileURL="workspace.prm"/>
+</GraphParameters>
+<Dictionary/>
+</Global>
+<Phase number="0">
+<Node aggregateKey="SECID;Date" guiName="Aggregate" guiX="658" guiY="267" id="AGGREGATE" mapping="$SECID:=$SECID;$Date:=$Date;$Open:=avg($Open);$High:=avg($High);$Low:=avg($Low);$Close:=avg($Close);$Volume:=sum($Volume);$Adj_Close:=&quot;NOTUSED&quot;;" type="AGGREGATE"/>
+<Node fileURL="${PROJECT}/source_files/filtered_period.csv" guiName="UniversalDataReader" guiX="246" guiY="285" id="UNIVERSAL_DATA_READER" type="DATA_READER"/>
+<Node fileURL="${PROJECT}/try.csv" guiName="UniversalDataWriter" guiX="1332" guiY="306" id="UNIVERSAL_DATA_WRITER" type="DATA_WRITER"/>
+<Edge fromNode="AGGREGATE:0" guiBendpoints="" guiRouter="Manhattan" id="Edge1" inPort="Port 0 (in)" metadata="Metadata0" outPort="Port 0 (out)" toNode="UNIVERSAL_DATA_WRITER:0"/>
+<Edge fromNode="UNIVERSAL_DATA_READER:0" guiBendpoints="" guiRouter="Manhattan" id="Edge0" inPort="Port 0 (in)" metadata="Metadata0" outPort="Port 0 (output)" toNode="AGGREGATE:0"/>
+</Phase>
+</Graph>

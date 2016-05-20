@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Graph author="nkorshun" created="Wed May 18 09:55:52 MSK 2016" guiVersion="4.1.3" id="1463554734712" licenseCode="CLP1DVIENN70261593EX" licenseType="Evaluation" modified="Wed May 18 22:59:40 MSK 2016" modifiedBy="nkorshun" name="russians_stock_file_to_unified_type" revision="1.5" showComponentDetails="true">
+<Global>
+<Metadata id="Metadata1" previewAttachment="${DATAIN_DIR}/trades.csv" previewAttachmentCharset="ISO-8859-1">
+<Record fieldDelimiter="," label="trades.csv" name="trades_csv" previewAttachment="${DATAIN_DIR}/trades.csv" previewAttachmentCharset="ISO-8859-1" quoteChar="both" quotedStrings="false" recordDelimiter="\r\n" skipSourceRows="1" type="delimited">
+<Field label="SECID" name="SECID" type="string"/>
+<Field format="yyyy-MM-dd" label="Date" name="Date" type="date"/>
+<Field label="Open" name="Open" type="number"/>
+<Field label="High" name="High" type="number"/>
+<Field label="Low" name="Low" type="number"/>
+<Field label="Close" name="Close" type="number"/>
+<Field label="Volume" name="Volume" type="integer"/>
+<Field eofAsDelimiter="true" label="Adj Close" name="Adj_Close" type="number"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata0" previewAttachment="${PROJECT}/source_files/Trades.csv" previewAttachmentCharset="ISO-8859-1">
+<Record fieldDelimiter=";" label="Trades.csv" name="Trades_csv" previewAttachment="${PROJECT}/source_files/Trades.csv" previewAttachmentCharset="ISO-8859-1" quoteChar="both" quotedStrings="false" recordDelimiter="\r\n" skipSourceRows="0" type="delimited">
+<Field format="dd.MM.yy" name="Field1" type="date"/>
+<Field name="Field2" type="string"/>
+<Field name="Field3" type="string"/>
+<Field name="Field4" scale="3" type="decimal"/>
+<Field name="Field5" scale="3" type="decimal"/>
+<Field name="Field6" scale="3" type="decimal"/>
+<Field name="Field7" scale="3" type="decimal"/>
+<Field name="Field8" type="long"/>
+<Field name="Field9" type="long"/>
+<Field eofAsDelimiter="true" name="Field10" type="long"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata2" previewAttachmentCharset="ISO-8859-1">
+<Record fieldDelimiter=";" name="unified_view" previewAttachmentCharset="ISO-8859-1" recordDelimiter="\r\n" type="delimited">
+<Field name="SECID" type="string"/>
+<Field name="Date" trim="true" type="date"/>
+<Field name="Open" trim="true" type="decimal"/>
+<Field name="High" trim="true" type="decimal"/>
+<Field name="Low" trim="true" type="decimal"/>
+<Field name="Close" trim="true" type="decimal"/>
+<Field name="Volume" trim="true" type="long"/>
+<Field name="Adj_Close" trim="true" type="number"/>
+</Record>
+</Metadata>
+<GraphParameters>
+<GraphParameterFile fileURL="workspace.prm"/>
+</GraphParameters>
+<Dictionary/>
+</Global>
+<Phase number="0">
+<Node guiName="Reformat" guiX="459" guiY="381" id="REFORMAT" type="REFORMAT">
+<attr name="transform"><![CDATA[//#CTL2
+
+// Transforms input record into output record.
+function integer transform() {
+	$out.0.Date = $in.0.Field1;
+	$out.0.SECID = $in.0.Field2;
+	$out.0.Open = $in.0.Field4;
+	$out.0.Close = $in.0.Field5;
+	$out.0.High = $in.0.Field6;
+	$out.0.Low = $in.0.Field7;
+	$out.0.Volume = $in.0.Field8;
+
+	return ALL;
+}
+
+// Called during component initialization.
+// function boolean init() {}
+
+// Called during each graph run before the transform is executed. May be used to allocate and initialize resources
+// required by the transform. All resources allocated within this method should be released
+// by the postExecute() method.
+// function void preExecute() {}
+
+// Called only if transform() throws an exception.
+// function integer transformOnError(string errorMessage, string stackTrace) {}
+
+// Called during each graph run after the entire transform was executed. Should be used to free any resources
+// allocated within the preExecute() method.
+// function void postExecute() {}
+
+// Called to return a user-defined error message when an error occurs.
+// function string getMessage() {}
+]]></attr>
+</Node>
+<Node fileURL="${PROJECT}/source_files/Trades.csv" guiName="UniversalDataReader" guiX="174" guiY="381" id="UNIVERSAL_DATA_READER" type="DATA_READER"/>
+<Node fileURL="${PROJECT}/source_files/unified_file_of_micex" guiName="UniversalDataWriter" guiX="723" guiY="381" id="UNIVERSAL_DATA_WRITER" outputFieldNames="true" type="DATA_WRITER"/>
+<Edge fromNode="REFORMAT:0" guiBendpoints="" guiRouter="Manhattan" id="Edge1" inPort="Port 0 (in)" metadata="Metadata2" outPort="Port 0 (out)" toNode="UNIVERSAL_DATA_WRITER:0"/>
+<Edge fromNode="UNIVERSAL_DATA_READER:0" guiBendpoints="" guiRouter="Manhattan" id="Edge0" inPort="Port 0 (in)" metadata="Metadata0" outPort="Port 0 (output)" toNode="REFORMAT:0"/>
+</Phase>
+</Graph>
